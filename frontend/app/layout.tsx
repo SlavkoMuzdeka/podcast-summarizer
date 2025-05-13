@@ -3,7 +3,6 @@ import type React from "react";
 
 import { Inter, Montserrat } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
-import { SettingsProvider } from "@/hooks/use-settings";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -33,7 +32,7 @@ export default function RootLayout({
           enableSystem={false}
           disableTransitionOnChange
         >
-          <SettingsProvider>{children}</SettingsProvider>
+          {children}
         </ThemeProvider>
       </body>
     </html>
