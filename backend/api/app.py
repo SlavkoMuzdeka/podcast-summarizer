@@ -91,9 +91,9 @@ def summarize_endpoint():
         return jsonify({"success": False, "error": str(e)}), 500
 
 
-@app.route("/hello", methods=["GET"])
+@app.route("/", methods=["GET"])
 def hello():
-    return "Hello, world!", 200
+    return "Backend app is running...", 200
 
 
 if __name__ == "__main__":
