@@ -1,3 +1,4 @@
+import os
 import json
 import logging
 
@@ -28,7 +29,7 @@ transcriber = Whisper_Transcriber(config=config)
 rss_downloader = RSS_Feed_Downloader(config=config)
 
 app = Flask(__name__)
-CORS(app, origins=["http://localhost:3000"])
+CORS(app, origins=[os.getenv("FRONTEND_URL")])
 
 
 @app.route("/api/summarize", methods=["POST"])
