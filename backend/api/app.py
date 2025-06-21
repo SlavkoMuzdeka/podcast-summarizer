@@ -2,37 +2,45 @@ import os
 import json
 import logging
 
-from flask_cors import CORS
 from dotenv import load_dotenv
+from flask_cors import CORS, cross_origin
 from flask import Flask, request, jsonify
 from models.downloaders.yt_downloader import YT_Downloader
 from models.summarizers.openai_summarizer import OpenAI_Summarizer
 from models.downloaders.rss_feed_downloader import RSS_Feed_Downloader
 from models.transcribers.whisper_transcriber import Whisper_Transcriber
 
+
 # Load env & config
 load_dotenv(override=True)
-with open("config.json") as f:
-    config = json.load(f)
+try:
+    with open("config.json") as f:
+        config = json.load(f)
+except FileNotFoundError:
+    raise RuntimeError(
+        "config.json file not found. Please provide a valid config.json."
+    )
+except json.JSONDecodeError:
+    raise RuntimeError("config.json is malformed. Please check the file format.")
 
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(message)s",
-    datefmt="%d-%m-%Y %H:%M:%S",
 )
 logger = logging.getLogger(__name__)
 
-yt_downloader = YT_Downloader(config=config)
-summarizer = OpenAI_Summarizer(config=config)
-transcriber = Whisper_Transcriber(config=config)
-rss_downloader = RSS_Feed_Downloader(config=config)
+yt_downloader = YT_Downloader(config=config["youtube"])
+transcriber = Whisper_Transcriber(config=config["whisper"])
+rss_downloader = RSS_Feed_Downloader(config=config["rss_feed"])
+summarizer = OpenAI_Summarizer(config=config["openai"])
 
 app = Flask(__name__)
-CORS(app, origins=[os.getenv("FRONTEND_URL")])
+CORS(app, origins=[os.getenv("FRONTEND_URL", "http://localhost:3000")])
 
 
 @app.route("/api/summarize", methods=["POST"])
+@cross_origin()
 def summarize_endpoint():
     """
     Expects JSON with:
@@ -51,6 +59,7 @@ def summarize_endpoint():
     detail_level = data.get("detail_level", 0.0)
     platform = data.get("platform")
 
+    # Pick downloader
     if platform == "youtube":
         downloader = yt_downloader
     else:
@@ -62,13 +71,14 @@ def summarize_endpoint():
         logger.info(f"Downloaded {metadata.get('title', '')}")
 
         # 2) Transcribe
-        text = transcriber.transcribe(
-            audio_path=mp3_path, video_id=metadata.get("id", "")
+        transcription = transcriber.transcribe(
+            audio_path=mp3_path, video_id=metadata["video_id"]
         )
+
         logger.info("Transcription complete")
 
         # 3) Summarize
-        summary = summarizer.summarize(text, detail=detail_level)
+        summary = summarizer.summarize(transcription, detail=detail_level)
         logger.info("Summarization complete")
 
         return (
@@ -89,11 +99,6 @@ def summarize_endpoint():
     except Exception as e:
         logger.exception("Error in /summarize")
         return jsonify({"success": False, "error": str(e)}), 500
-
-
-@app.route("/", methods=["GET"])
-def hello():
-    return "Backend app is running...", 200
 
 
 if __name__ == "__main__":

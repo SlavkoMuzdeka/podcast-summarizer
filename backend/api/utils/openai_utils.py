@@ -32,7 +32,7 @@ def get_chat_completion(client: OpenAI, messages: List[dict], model: str) -> str
 
 
 def chunk_on_delimiter(
-    text: str, max_tokens: int, delimiter: str, debug: bool
+    text: str, max_tokens: int, delimiter: str, verbose: bool
 ) -> List[str]:
     """
     Splits a given text into smaller chunks based on a specified delimiter.
@@ -41,7 +41,7 @@ def chunk_on_delimiter(
     - text (str): The text to be split.
     - max_tokens (int): Maximum token count per chunk.
     - delimiter (str): The delimiter used to split the text.
-    - debug (bool): Whether to log debugging information.
+    - verbose (bool): Whether to log debugging information.
 
     Returns:
     - List[str]: A list of text chunks.
@@ -52,9 +52,9 @@ def chunk_on_delimiter(
         max_tokens,
         chunk_delimiter=delimiter,
         add_ellipsis_for_overflow=True,
-        debug=debug,
+        verbose=verbose,
     )
-    if dropped_chunk_count > 0 and debug:
+    if dropped_chunk_count > 0 and verbose:
         logger.warning(f"{dropped_chunk_count} chunks were dropped due to overflow")
 
     # Ensure each chunk ends with the delimiter
@@ -68,7 +68,7 @@ def _combine_chunks_with_no_minimum(
     chunk_delimiter="\n\n",
     header: Optional[str] = None,
     add_ellipsis_for_overflow=False,
-    debug: bool = False,
+    verbose: bool = False,
 ) -> Tuple[List[str], List[int]]:
     """
     Combines small text chunks into larger chunks without exceeding the maximum token limit.
@@ -79,7 +79,7 @@ def _combine_chunks_with_no_minimum(
     - chunk_delimiter (str, optional): Delimiter used to join chunks. Defaults to "\n\n".
     - header (Optional[str], optional): Optional header to be added at the start of each chunk.
     - add_ellipsis_for_overflow (bool, optional): Whether to add "..." if a chunk is too large.
-    - debug (bool, optional): Whether to enable debugging logs.
+    - verbose (bool, optional): Whether to enable debugging logs.
 
     Returns:
     - Tuple[List[str], int]: A tuple containing the list of combined chunks and the count of dropped chunks.
@@ -92,7 +92,7 @@ def _combine_chunks_with_no_minimum(
         chunk_with_header = [chunk] if header is None else [header, chunk]
 
         if num_tokens_from_text(chunk_delimiter.join(chunk_with_header)) > max_tokens:
-            if debug:
+            if verbose:
                 logger.warning(f"Chunk overflow")
             if (
                 add_ellipsis_for_overflow

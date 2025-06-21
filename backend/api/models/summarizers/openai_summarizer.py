@@ -14,6 +14,9 @@ load_dotenv(override=True)
 
 logger = logging.getLogger(__name__)
 
+DEFAULT_MINIMUM_CHUNK_SIZE = 500
+DEFAULT_OPENAI_MODEL = "gpt-4o-mini"
+
 
 class OpenAI_Summarizer:
     """
@@ -52,15 +55,15 @@ class OpenAI_Summarizer:
         Parameters:
         - config (dict): Configuration dictionary containing settings, including whether debugging is enabled.
         """
-        self.debug = config.get("debug", False)
-        self.config = config.get("openai", {})
+        self.config = config
+        self.verbose = config.get("verbose", False)
         self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
     def summarize(
         self,
         text: str,
         detail: float = 0,
-        minimum_chunk_size: Optional[int] = 500,
+        minimum_chunk_size: Optional[int] = DEFAULT_MINIMUM_CHUNK_SIZE,
         chunk_delimiter: str = ".",
     ):
         """
@@ -85,7 +88,7 @@ class OpenAI_Summarizer:
                 text=text,
                 max_tokens=minimum_chunk_size,
                 delimiter=chunk_delimiter,
-                debug=self.debug,
+                verbose=self.verbose,
             )
         )
         num_chunks = int(min_chunks + detail * (max_chunks - min_chunks))
@@ -93,9 +96,11 @@ class OpenAI_Summarizer:
         # Calculate chunk size based on total document length and target chunk count
         document_length = num_tokens_from_text(text)
         chunk_size = max(minimum_chunk_size, document_length // num_chunks)
-        text_chunks = chunk_on_delimiter(text, chunk_size, chunk_delimiter, self.debug)
+        text_chunks = chunk_on_delimiter(
+            text, chunk_size, chunk_delimiter, self.verbose
+        )
 
-        if self.debug:
+        if self.verbose:
             logger.info(f"Total tokens in document: {document_length}")
             logger.info(
                 f"Splitting the text into {len(text_chunks)} chunks to be summarized."
@@ -115,5 +120,5 @@ class OpenAI_Summarizer:
         ]
 
         return get_chat_completion(
-            self.client, messages, self.config.get("model", "gpt-3.5-turbo")
+            self.client, messages, self.config.get("model", DEFAULT_OPENAI_MODEL)
         )

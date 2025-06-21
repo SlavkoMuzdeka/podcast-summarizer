@@ -2,3 +2,5 @@
 .env
 downloads
 __pycache__/
+hugging_face.py
+pom*.py

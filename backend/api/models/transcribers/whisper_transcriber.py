@@ -7,7 +7,10 @@ from pydub import AudioSegment
 
 logger = logging.getLogger(__name__)
 
+DEFAULT_FILE_EXT = ".mp3"
+DEFAULT_DOWNLOADS_DIR = "downloads"
 MAX_FILE_SIZE_BYTES = 25 * 1024 * 1024
+DEFAULT_TRANSCRIPTION_EXTENSION = ".txt"
 
 
 class Whisper_Transcriber:
@@ -15,8 +18,8 @@ class Whisper_Transcriber:
     A class for transcribing audio files using OpenAI's Whisper model.
 
     Attributes:
-        config (dict): Configuration dictionary containing settings like model type and debug mode.
-        debug (bool): Flag to enable or disable debugging logs.
+        config (dict): Configuration dictionary containing settings like model type and verbose mode.
+        verbose (bool): Flag to enable or disable debugging logs.
         model (whisper.Whisper): Loaded Whisper model for transcription.
     """
 
@@ -25,29 +28,29 @@ class Whisper_Transcriber:
         Initializes the WhisperTranscriber with a specific model size.
 
         Args:
-            config (dict): Configuration settings, including 'WHISPER_MODEL' and 'DEBUG'.
+            config (dict): Configuration settings, including 'WHISPER_MODEL' and 'VERBOSE'.
         """
-        self.debug = config.get("debug", False)
-        self.config = config.get("whisper", {})
+        self.config = config
+        self.verbose = config.get("verbose", False)
         self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
     def transcribe(self, audio_path: str, video_id: str) -> str:
         base_dir = os.path.join(
             os.getcwd(),
-            self.config.get("downloads_dir", "downloads"),
+            self.config.get("downloads_dir", DEFAULT_DOWNLOADS_DIR),
             video_id,
         )
         transcript_path = os.path.join(
             base_dir,
-            f"{video_id}{self.config.get('transcription_extension', '.txt')}",
+            f"{video_id}{self.config.get('transcription_extension', DEFAULT_TRANSCRIPTION_EXTENSION)}",
         )
 
-        if self.debug and os.path.exists(transcript_path):
+        if self.verbose and os.path.exists(transcript_path):
             logger.info("Transcription already exists.")
             with open(transcript_path, "r", encoding="utf-8") as file:
                 return file.read()
 
-        if self.debug:
+        if self.verbose:
             logger.info("Starting transcription...")
 
         transcribed_text = ""
@@ -60,7 +63,7 @@ class Whisper_Transcriber:
                 )
                 transcribed_text = result.text
         else:
-            if self.debug:
+            if self.verbose:
                 size_mb = os.path.getsize(audio_path) / (1024 * 1024)
                 logger.info(
                     f"Audio file exceeds 25MB ({size_mb:.2f} MB), splitting into chunks..."
@@ -81,7 +84,8 @@ class Whisper_Transcriber:
                 chunk = audio[start_ms:end_ms]
 
                 chunk_path = os.path.join(
-                    base_dir, f"{video_id}_{i+1}{self.config.get('mp3_ext', '.mp3')}"
+                    base_dir,
+                    f"{video_id}_{i+1}{self.config.get('file_ext', DEFAULT_FILE_EXT)}",
                 )
 
                 chunk.export(chunk_path, format="mp3")
@@ -92,12 +96,12 @@ class Whisper_Transcriber:
                     )
                     transcribed_text += result.text
 
-                if self.debug:
+                if self.verbose:
                     logger.info(f"Processed chunk {i + 1} of {chunks}")
 
                 os.remove(chunk_path)
 
-        if self.debug:
+        if self.verbose:
             with open(transcript_path, "w", encoding="utf-8") as file:
                 file.write(transcribed_text)
             logger.info(f"Transcript saved at: {transcript_path}")

@@ -1,21 +1,25 @@
 {
-  "debug": true,
   "whisper": {
+    "verbose": true,
     "model": "base",
+    "file_ext": ".mp3",
     "transcrition_ext": ".txt",
     "downloads_dir": "downloads"
   },
   "youtube": {
-    "mp3_ext": ".mp3",
+    "verbose": true,
+    "file_ext": ".mp3",
     "metadata_ext": ".info.json",
     "downloads_dir": "downloads"
   },
   "rss_feed": {
-    "mp3_ext": ".mp3",
+    "verbose": true,
     "chunk_size": 8192,
+    "file_ext": ".mp3",
     "downloads_dir": "downloads"
   },
   "openai": {
+    "verbose": true,
     "model": "gpt-4.1"
   }
 }

@@ -96,7 +96,7 @@ const cardVariants = {
   },
 };
 
-const API_URL = process.env.API_URL || "";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "";
 
 export function PodcastSummarizer() {
   const [youtubeUrl, setYoutubeUrl] = useState("");
