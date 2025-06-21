@@ -4,19 +4,19 @@
     "model": "base",
     "file_ext": ".mp3",
     "transcrition_ext": ".txt",
-    "downloads_dir": "downloads"
+    "downloads_dir": "tmp"
   },
   "youtube": {
     "verbose": true,
     "file_ext": ".mp3",
     "metadata_ext": ".info.json",
-    "downloads_dir": "downloads"
+    "downloads_dir": "tmp"
   },
   "rss_feed": {
     "verbose": true,
     "chunk_size": 8192,
     "file_ext": ".mp3",
-    "downloads_dir": "downloads"
+    "downloads_dir": "tmp"
   },
   "openai": {
     "verbose": true,

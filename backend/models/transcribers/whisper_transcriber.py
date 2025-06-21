@@ -8,7 +8,7 @@ from pydub import AudioSegment
 logger = logging.getLogger(__name__)
 
 DEFAULT_FILE_EXT = ".mp3"
-DEFAULT_DOWNLOADS_DIR = "downloads"
+DEFAULT_DOWNLOADS_DIR = "tmp"
 MAX_FILE_SIZE_BYTES = 25 * 1024 * 1024
 DEFAULT_TRANSCRIPTION_EXTENSION = ".txt"
 

@@ -1,6 +1,6 @@
 .venv
 .env
-downloads
+tmp
 __pycache__/
 hugging_face.py
 pom*.py

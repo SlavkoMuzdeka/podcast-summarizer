@@ -9,7 +9,7 @@ from models.downloaders.downloader import Downloader
 logger = logging.getLogger(__name__)
 
 DEFAULT_FILE_EXT = ".mp3"
-DEFAULT_DOWNLOADS_DIR = "downloads"
+DEFAULT_DOWNLOADS_DIR = "tmp"
 DEFAULT_METADATA_EXT = ".info.json"
 
 
@@ -34,7 +34,7 @@ class YT_Downloader(Downloader):
         Args:
             config (dict): Configuration settings including:
                 - 'verbose' (bool): Enable verbose logging (default: False).
-                - 'downloads_dir' (str): Directory to store downloads (default: "downloads").
+                - 'downloads_dir' (str): Directory to store downloads (default: "tmp").
                 - 'file_ext' (str): Extension for audio file (default: ".mp3").
                 - 'metadata_ext' (str): Extension for metadata file (default: ".info.json").
         """

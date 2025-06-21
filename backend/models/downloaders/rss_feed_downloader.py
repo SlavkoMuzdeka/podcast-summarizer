@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 DEFAULT_FILE_EXT = ".mp3"
 DEFAULT_CHUNK_SIZE = 8192  # 8 KB
-DEFAULT_DOWNLOADS_DIR = "downloads"
+DEFAULT_DOWNLOADS_DIR = "tmp"
 
 
 class RSS_Feed_Downloader(Downloader):
@@ -30,7 +30,7 @@ class RSS_Feed_Downloader(Downloader):
         Args:
             config (dict): Configuration dictionary.
                 - 'verbose' (bool): Enables verbose logging.
-                - 'downloads_dir' (str): Directory to store downloaded episodes (default: "downloads").
+                - 'downloads_dir' (str): Directory to store downloaded episodes (default: "tmp").
                 - 'file_ext' (str): File extension for saved audio (default: ".mp3").
                 - 'chunk_size' (int): Size of download chunks in bytes (default: 8192).
         """
