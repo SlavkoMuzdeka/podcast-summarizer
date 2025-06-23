@@ -10,7 +10,8 @@
     "verbose": true,
     "file_ext": ".mp3",
     "metadata_ext": ".info.json",
-    "downloads_dir": "tmp"
+    "downloads_dir": "tmp",
+    "cookies_path": "cookies.txt"
   },
   "rss_feed": {
     "verbose": true,

@@ -160,6 +160,10 @@ class YT_Downloader(Downloader):
             "outtmpl": os.path.join(output_dir, "%(id)s", "%(id)s.%(ext)s"),
         }
 
+        cookie_path = self.config.get("cookies_path")
+        if cookie_path:
+            opts["cookiefile"] = cookie_path
+
         if audio_only:
             opts.update(
                 {
