@@ -1,5 +1,6 @@
 import os
 import json
+import shutil
 import logging
 
 from dotenv import load_dotenv
@@ -13,6 +14,7 @@ from models.transcribers.whisper_transcriber import Whisper_Transcriber
 
 # Load env & config
 load_dotenv(override=True)
+
 try:
     with open("config.json") as f:
         config = json.load(f)
@@ -29,6 +31,11 @@ logging.basicConfig(
     format="%(asctime)s - %(message)s",
 )
 logger = logging.getLogger(__name__)
+
+cookie_src = os.path.join(os.getcwd(), config["youtube"]["cookies_path"])
+cookie_dst = os.path.join("/tmp", os.path.basename(cookie_src))
+shutil.copy(cookie_src, cookie_dst)
+config["youtube"]["cookies_path"] = cookie_dst
 
 yt_downloader = YT_Downloader(config=config["youtube"])
 transcriber = Whisper_Transcriber(config=config["whisper"])
