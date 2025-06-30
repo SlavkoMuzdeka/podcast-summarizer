@@ -67,15 +67,14 @@ class RSS_Feed_Downloader(Downloader):
         episode_id = mp3_url.split("/")[-1].split(".")[0]
 
         output_dir = os.path.join(
-            os.getcwd(),
+            "/tmp",
             self.config.get("downloads_dir", DEFAULT_DOWNLOADS_DIR),
             episode_id,
         )
-        os.makedirs(os.path.join(output_dir, episode_id), exist_ok=True)
+        os.makedirs(output_dir, exist_ok=True)
         file_path = os.path.join(
             output_dir,
-            episode_id,
-            episode_id + self.config.get("file_ext", DEFAULT_DOWNLOADS_DIR),
+            episode_id + self.config.get("file_ext", DEFAULT_FILE_EXT),
         )
 
         metadata = self._get_metadata(entry)
