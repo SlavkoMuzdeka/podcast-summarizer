@@ -53,11 +53,7 @@ class YT_Downloader(Downloader):
             "ffprobe_location": os.environ["FFPROBE_BINARY"],
             "paths": {"home": self.root_dir, "temp": self.root_dir},
             "outtmpl": os.path.join(self.downloads_root, "%(id)s", "%(id)s.%(ext)s"),
-            "cache_dir": (
-                "/tmp/yt-dlp-cache"
-                if self.on_vercel
-                else os.path.join(self.root_dir, "yt-dlp-cache")
-            ),
+            "nocache": True,
         }
 
         cookiefile = self.config.get("cookies_path")
