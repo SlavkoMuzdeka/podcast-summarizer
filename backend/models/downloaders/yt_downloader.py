@@ -4,6 +4,7 @@ import logging
 
 from typing import Tuple
 from yt_dlp import YoutubeDL
+
 from models.downloaders.downloader import Downloader
 
 logger = logging.getLogger(__name__)
@@ -48,6 +49,7 @@ class YT_Downloader(Downloader):
         output_template = os.path.join(outdir, f"{self.video_id}{extension}")
 
         opts = {
+            "ffmpeg_location": os.environ["FFMPEG_BINARY"],
             "paths": {"home": self.root_dir, "temp": self.root_dir},
             "outtmpl": os.path.join(self.downloads_root, "%(id)s", "%(id)s.%(ext)s"),
         }
