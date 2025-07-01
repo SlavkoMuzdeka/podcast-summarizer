@@ -2,11 +2,12 @@ import os
 import json
 import shutil
 import logging
+import static_ffmpeg
+
 
 from dotenv import load_dotenv
 from flask_cors import CORS, cross_origin
 from flask import Flask, request, jsonify
-from imageio_ffmpeg import get_ffmpeg_exe
 from models.downloaders.yt_downloader import YT_Downloader
 from models.summarizers.openai_summarizer import OpenAI_Summarizer
 from models.downloaders.rss_feed_downloader import RSS_Feed_Downloader
@@ -33,10 +34,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-
-ffmpeg_path = get_ffmpeg_exe()
-os.environ["FFMPEG_BINARY"] = ffmpeg_path
-os.environ["FFPROBE_BINARY"] = ffmpeg_path
+static_ffmpeg.add_paths()
 
 cookie_src = os.path.join(os.getcwd(), config["youtube"]["cookies_path"])
 cookie_dst = os.path.join("/tmp", os.path.basename(cookie_src))

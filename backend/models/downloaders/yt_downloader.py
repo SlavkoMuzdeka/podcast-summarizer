@@ -1,5 +1,6 @@
 import os
 import json
+import shutil
 import logging
 
 from typing import Tuple
@@ -49,8 +50,7 @@ class YT_Downloader(Downloader):
         output_template = os.path.join(outdir, f"{self.video_id}{extension}")
 
         opts = {
-            "ffmpeg_location": os.environ["FFMPEG_BINARY"],
-            "ffprobe_location": os.environ["FFPROBE_BINARY"],
+            "ffmpeg_location": shutil.which("ffmpeg"),
             "paths": {"home": self.root_dir, "temp": self.root_dir},
             "outtmpl": os.path.join(self.downloads_root, "%(id)s", "%(id)s.%(ext)s"),
             "nocache": True,
