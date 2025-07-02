@@ -2,8 +2,6 @@ import os
 import json
 import shutil
 import logging
-import static_ffmpeg
-
 
 from dotenv import load_dotenv
 from flask_cors import CORS, cross_origin
@@ -33,8 +31,6 @@ logging.basicConfig(
     format="%(asctime)s - %(message)s",
 )
 logger = logging.getLogger(__name__)
-
-static_ffmpeg.add_paths()
 
 cookie_src = os.path.join(os.getcwd(), config["youtube"]["cookies_path"])
 cookie_dst = os.path.join("/tmp", os.path.basename(cookie_src))

@@ -4,7 +4,6 @@ import logging
 
 from openai import OpenAI
 from pydub import AudioSegment
-from imageio_ffmpeg import get_ffmpeg_exe
 
 logger = logging.getLogger(__name__)
 
@@ -12,13 +11,6 @@ DEFAULT_FILE_EXT = ".mp3"
 DEFAULT_DOWNLOADS_DIR = "tmp"
 MAX_FILE_SIZE_BYTES = 25 * 1024 * 1024
 DEFAULT_TRANSCRIPTION_EXTENSION = ".txt"
-
-ffmpeg_path = get_ffmpeg_exe()
-ffprobe_path = get_ffmpeg_exe()
-
-AudioSegment.converter = ffmpeg_path
-AudioSegment.ffmpeg = ffmpeg_path
-AudioSegment.ffprobe = ffprobe_path
 
 
 class Whisper_Transcriber:
