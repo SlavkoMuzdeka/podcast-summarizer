@@ -46,6 +46,12 @@ app = Flask(__name__)
 CORS(app, origins=[os.getenv("FRONTEND_URL", "http://localhost:3000")])
 
 
+@app.route("/", methods=["GET"])
+@cross_origin()
+def index():
+    return jsonify({"message": "Welcome to the Podcast Summarizer API!"}), 200
+
+
 @app.route("/api/summarize", methods=["POST"])
 @cross_origin()
 def summarize_endpoint():
